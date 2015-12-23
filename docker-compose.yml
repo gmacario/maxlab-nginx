@@ -1,22 +1,39 @@
+maxlab-polito-it:
+  build: maxlab-polito-it/
+  ports:
+    - 6180:80
+
+gmoffice-solarma-it:
+  build: gmoffice-solarma-it/
+  ports:
+    - 6280:80
+
+www-solarma-it:
+  build: www-solarma-it/
+  ports:
+    - 6380:80
+
 maxlab-webproxy:
   build: maxlab-webproxy/
   ports:
-    - 6080:80
+    - 6980:80
 
-web-test:
-  build: web-test/
-  ports:
-    - "7080:80"
+# web-test:
+#   build: web-test/
+#   ports:
+#     - "7080:80"
 
 nginx-ssl-proxy:
   image: danieldent/nginx-ssl-proxy
   restart: always
   environment:
-    UPSTREAM: cam01-internal.solarma.it:80
+    UPSTREAM: dm-99-100.solarma.it:6080
+    #UPSTREAM: cam01-internal.solarma.it:80
     #UPSTREAM: mv-linux-powerhorse.solarma.it:7080
     #UPSTREAM: mv-linux-powerhorse.solarma.it:9080
     #
-    SERVERNAME: gmoffice.solarma.it
+    SERVERNAME: dm-99-100.solarma.it
+    #SERVERNAME: gmoffice.solarma.it
     #SERVERNAME: maxlab.polito.it
   ports:
     - "80:80"
@@ -25,7 +42,5 @@ nginx-ssl-proxy:
 #    - web-test:appserver
   volumes:
     - "/certs"
-
-# maxlab-polito-it:
 
 # EOF
