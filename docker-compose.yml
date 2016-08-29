@@ -11,6 +11,9 @@ services:
       - 6180:80
     environment:
       - VIRTUAL_HOST=maxlab.polito.it
+      - LETSENCRYPT_HOST=maxlab.polito.it
+      - LETSENCRYPT_EMAIL=webmaster@solarma.it
+      - LETSENCRYPT_TEST=true
 
   gmoffice-solarma-it:
     build: gmoffice-solarma-it/
@@ -18,6 +21,19 @@ services:
       - 6280:80
     environment:
       - VIRTUAL_HOST=gmoffice.solarma.it
+      - LETSENCRYPT_HOST=gmoffice.solarma.it
+      - LETSENCRYPT_EMAIL=webmaster@solarma.it
+      - LETSENCRYPT_TEST=true
+
+  test2-solarma-it:
+    image: jwilder/whoami
+    ports:
+      - 6380:8000
+    environment:
+      - VIRTUAL_HOST=test2.solarma.it
+      - LETSENCRYPT_HOST=test2.solarma.it
+      - LETSENCRYPT_EMAIL=webmaster@solarma.it
+      - LETSENCRYPT_TEST=true
 
 ## www-solarma-it:
 ##   build: www-solarma-it/
@@ -34,21 +50,35 @@ services:
 #   ports:
 #     - "7080:80"
 
-  whoami:
-    image: jwilder/whoami
-    # container_name: whoami
-    ports:
-      - 8000:8000
-    environment:
-      - VIRTUAL_HOST=whoami.local
+  ## whoami:
+  ##   image: jwilder/whoami
+  ##   # container_name: whoami
+  ##   ports:
+  ##     - 8000:8000
+  ##   environment:
+  ##     - VIRTUAL_HOST=whoami.local
 
   nginx-proxy:
     image: jwilder/nginx-proxy
     # container_name: nginx-proxy
     ports:
       - "80:80"
+      - "443:443"
     volumes:
+      - /path/to/certs:/etc/nginx/certs:rw
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    environment:
+      - ACME_CA_URI=https://acme-staging.api.letsencrypt.org/directory
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /path/to/certs:/etc/nginx/certs:rw
+    volumes_from:
+      - nginx-proxy:rw
 
 ### nginx-ssl-proxy:
 ###   image: danieldent/nginx-ssl-proxy
