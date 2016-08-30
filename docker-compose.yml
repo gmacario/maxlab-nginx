@@ -15,6 +15,13 @@ services:
       - LETSENCRYPT_EMAIL=webmaster@solarma.it
       - LETSENCRYPT_TEST=true
 
+  cam01-solarma-it:
+    build: cam01-solarma-it/
+    ports:
+      - 6240:80
+    environment:
+      - VIRTUAL_HOST=cam01.solarma.it
+
   gmoffice-solarma-it:
     build: gmoffice-solarma-it/
     ports:
